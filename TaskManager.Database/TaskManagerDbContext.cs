@@ -12,10 +12,14 @@ namespace TaskManager.Database
 
         public TaskManagerDbContext(DbContextOptions<TaskManagerDbContext> options) : base(options)
         {
-            
+
         }
 
-
+        public DbSet<User> Users { get; set; }
+        public DbSet<Role> Roles { get; set; }
+        public DbSet<Permissions> Permissions { get; set; }
+        public DbSet<TaskItem> Tasks { get; set; }
+        public DbSet<AuditLog> AuditLogs { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

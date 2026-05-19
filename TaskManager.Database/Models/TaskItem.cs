@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 using TaskManager.Database.Enums;
 
 namespace TaskManager.Database.Models
 {
+    [Table("TaskItems")]
     public class TaskItem
     {
         public int Id { get; set; }
