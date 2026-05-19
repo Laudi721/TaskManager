@@ -1,0 +1,70 @@
+serv<div class="login-page">
+  <mat-card class="login-card">
+    <mat-card-header>
+      <mat-card-title>Zaloguj się</mat-card-title>
+      <mat-card-subtitle>TaskManager</mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      <form [formGroup]="form" (ngSubmit)="submit()" class="login-form">
+        <mat-form-field appearance="outline">
+          <mat-label>Login</mat-label>
+          <input
+            matInput
+            type="text"
+            formControlName="login"
+            placeholder="np. jan.kowalski"
+            autocomplete="username"
+          />
+          @if (form.controls.login.hasError('required') && form.controls.login.touched) {
+            <mat-error>Login jest wymagany.</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Hasło</mat-label>
+          <input
+            matInput
+            [type]="hidePassword() ? 'password' : 'text'"
+            formControlName="password"
+            placeholder="Wprowadź hasło"
+            autocomplete="current-password"
+          />
+          <button
+            matSuffix
+            mat-icon-button
+            type="button"
+            (click)="togglePassword()"
+            [attr.aria-label]="hidePassword() ? 'Pokaż hasło' : 'Ukryj hasło'"
+          >
+            <mat-icon>{{ hidePassword() ? 'visibility_off' : 'visibility' }}</mat-icon>
+          </button>
+          @if (form.controls.password.hasError('required') && form.controls.password.touched) {
+            <mat-error>Hasło jest wymagane.</mat-error>
+          }
+        </mat-form-field>
+
+        @if (errorMessage()) {
+          <div class="message message--error">{{ errorMessage() }}</div>
+        }
+        @if (successMessage()) {
+          <div class="message message--success">{{ successMessage() }}</div>
+        }
+
+        <button
+          mat-flat-button
+          color="primary"
+          type="submit"
+          class="login-button"
+          [disabled]="loading()"
+        >
+          @if (loading()) {
+            <mat-spinner diameter="20"></mat-spinner>
+          } @else {
+            <span>Zaloguj</span>
+          }
+        </button>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>
