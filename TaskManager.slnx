@@ -1,5 +1,5 @@
 <Solution>
   <Project Path="TaskManager.Common/TaskManager.Common.csproj" Id="cecf5a35-15b7-45f2-aadc-56ee8b550f06" />
   <Project Path="TaskManager.Database/TaskManager.Database.csproj" Id="00d851e1-527b-4cb4-92f7-dcd9407b555d" />
-  <Project Path="TaskManager/TaskManager.WebApi.csproj" />
+  <Project Path="TaskManager.WebApi/TaskManager.WebApi.csproj" />
 </Solution>
