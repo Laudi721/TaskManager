@@ -1,4 +1,4 @@
-namespace TaskManager.WebApi.Dtos
+namespace Forge.WebApi.Dtos
 {
     public class LoginResponse
     {

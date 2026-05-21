@@ -2,9 +2,9 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
-using TaskManager.Database.Models;
+using Forge.Database.Models;
 
-namespace TaskManager.WebApi.Security
+namespace Forge.WebApi.Security
 {
     public class TokenService : ITokenService
     {

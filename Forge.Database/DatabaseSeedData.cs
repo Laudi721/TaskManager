@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using TaskManager.Common.Interfaces;
-using TaskManager.Common.Security;
-using TaskManager.Database.Models;
+using Forge.Common.Interfaces;
+using Forge.Common.Security;
+using Forge.Database.Models;
 
-namespace TaskManager.Database
+namespace Forge.Database
 {
     public class DatabaseSeedData
     {
@@ -16,7 +16,7 @@ namespace TaskManager.Database
             _passwordService = passwordService;
         }
 
-        public void Seed(TaskManagerDbContext context)
+        public void Seed(ForgeDbContext context)
         {
             //permissions
             var permissions = new List<Permissions>

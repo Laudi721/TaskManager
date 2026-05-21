@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace TaskManager.Common.Interfaces
+namespace Forge.Common.Interfaces
 {
     public interface IPasswordService
     {

@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace TaskManager.Database.Migrations
+namespace Forge.Database.Migrations
 {
     /// <inheritdoc />
     public partial class ChangesInTableNames : Migration

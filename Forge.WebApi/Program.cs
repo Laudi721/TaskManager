@@ -2,10 +2,10 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using TaskManager.Common.Interfaces;
-using TaskManager.Common.Security;
-using TaskManager.Database;
-using TaskManager.WebApi.Security;
+using Forge.Common.Interfaces;
+using Forge.Common.Security;
+using Forge.Database;
+using Forge.WebApi.Security;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,7 +25,7 @@ builder.Services.AddCors(options =>
 
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
-builder.Services.AddDbContext<TaskManagerDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddDbContext<ForgeDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 AddJwtAuthentication(builder);
 AddScoped(builder);
@@ -92,7 +92,7 @@ void CheckDatabaseCompatibility(WebApplication app)
     {
         var services = scope.ServiceProvider;
 
-        var context = services.GetRequiredService<TaskManagerDbContext>();
+        var context = services.GetRequiredService<ForgeDbContext>();
         var seeder = services.GetRequiredService<DatabaseSeedData>();
 
         context.Database.Migrate();

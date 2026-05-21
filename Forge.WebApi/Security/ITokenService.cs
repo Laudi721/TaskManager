@@ -1,6 +1,6 @@
-using TaskManager.Database.Models;
+using Forge.Database.Models;
 
-namespace TaskManager.WebApi.Security
+namespace Forge.WebApi.Security
 {
     public record TokenResult(string Token, DateTime ExpiresAtUtc);
 

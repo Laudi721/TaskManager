@@ -1,22 +1,22 @@
 using Microsoft.AspNetCore.Mvc;
-using TaskManager.Common.Interfaces;
-using TaskManager.Database;
-using TaskManager.Database.Models;
-using TaskManager.WebApi.Dtos;
-using TaskManager.WebApi.Security;
+using Forge.Common.Interfaces;
+using Forge.Database;
+using Forge.Database.Models;
+using Forge.WebApi.Dtos;
+using Forge.WebApi.Security;
 using Microsoft.EntityFrameworkCore;
 
-namespace TaskManager.WebApi.Controllers
+namespace TaskMForgeanager.WebApi.Controllers
 {
     [ApiController]
     [Route("api/auth")]
     public class AuthController : ControllerBase
     {
-        private readonly TaskManagerDbContext _db;
+        private readonly ForgeDbContext _db;
         private readonly IPasswordService _passwordService;
         private readonly ITokenService _tokenService;
 
-        public AuthController(TaskManagerDbContext db, IPasswordService passwordService, ITokenService tokenService)
+        public AuthController(ForgeDbContext db, IPasswordService passwordService, ITokenService tokenService)
         {
             _db = db;
             _passwordService = passwordService;

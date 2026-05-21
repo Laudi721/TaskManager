@@ -1,7 +1,7 @@
 using System.Security.Cryptography;
-using TaskManager.Common.Interfaces;
+using Forge.Common.Interfaces;
 
-namespace TaskManager.Common.Security
+namespace Forge.Common.Security
 {
     /// <summary>
     /// PBKDF2-HMAC-SHA256 password hashing.

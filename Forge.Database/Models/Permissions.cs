@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
-namespace TaskManager.Database.Models
+namespace Forge.Database.Models
 {
     [Table("Permissions")]
     public class Permissions

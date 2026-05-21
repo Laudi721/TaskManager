@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace TaskManager.Database.Enums
+namespace Forge.Database.Enums
 {
     public enum TaskItemStatus
     {

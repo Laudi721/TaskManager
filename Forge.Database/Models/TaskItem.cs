@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
-using TaskManager.Database.Enums;
+using Forge.Database.Enums;
 
-namespace TaskManager.Database.Models
+namespace Forge.Database.Models
 {
     [Table("TaskItems")]
     public class TaskItem

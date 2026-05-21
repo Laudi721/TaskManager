@@ -1,16 +1,16 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using TaskManager.Database.Models;
+using Forge.Database.Models;
 
-namespace TaskManager.Database
+namespace Forge.Database
 {
-    public class TaskManagerDbContext : DbContext
+    public class ForgeDbContext : DbContext
     {
-        public TaskManagerDbContext()
+        public ForgeDbContext()
         {
             
         }
 
-        public TaskManagerDbContext(DbContextOptions<TaskManagerDbContext> options) : base(options)
+        public ForgeDbContext(DbContextOptions<ForgeDbContext> options) : base(options)
         {
 
         }

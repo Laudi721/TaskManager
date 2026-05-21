@@ -8,9 +8,9 @@ using TaskManager.Database;
 
 #nullable disable
 
-namespace TaskManager.Database.Migrations
+namespace Forge.Database.Migrations
 {
-    [DbContext(typeof(TaskManagerDbContext))]
+    [DbContext(typeof(ForgeDbContext))]
     partial class TaskManagerDbContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)

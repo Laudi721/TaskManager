@@ -11,7 +11,7 @@ using TaskManager.Database;
 
 namespace TaskManager.Database.Migrations
 {
-    [DbContext(typeof(TaskManagerDbContext))]
+    [DbContext(typeof(ForgeDbContext))]
     [Migration("20260519143949_ChangesInTableNames")]
     partial class ChangesInTableNames
     {

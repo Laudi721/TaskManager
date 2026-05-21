@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace TaskManager.Database.Migrations
+namespace Forge.Database.Migrations
 {
     /// <inheritdoc />
     public partial class Init : Migration
