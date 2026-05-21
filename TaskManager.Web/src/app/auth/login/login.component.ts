@@ -1,5 +1,6 @@
 import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -27,6 +28,7 @@ import { AuthService, LoginResponse } from '../auth.service';
 export class LoginComponent {
   private readonly fb = inject(FormBuilder);
   private readonly auth = inject(AuthService);
+  private readonly router = inject(Router);
 
   readonly form = this.fb.nonNullable.group({
     login: ['', [Validators.required]],
@@ -53,6 +55,7 @@ export class LoginComponent {
         this.loading.set(false);
         if (response.success) {
           this.successMessage.set(`Zalogowano jako ${response.name ?? response.login}`);
+          this.router.navigateByUrl('/home');
         } else {
           this.errorMessage.set(response.message ?? 'Logowanie nie powiodło się.');
         }

@@ -3,6 +3,7 @@ using TaskManager.Common.Interfaces;
 using TaskManager.Database;
 using TaskManager.Database.Models;
 using TaskManager.WebApi.Dtos;
+using TaskManager.WebApi.Security;
 using Microsoft.EntityFrameworkCore;
 
 namespace TaskManager.WebApi.Controllers
@@ -13,11 +14,13 @@ namespace TaskManager.WebApi.Controllers
     {
         private readonly TaskManagerDbContext _db;
         private readonly IPasswordService _passwordService;
+        private readonly ITokenService _tokenService;
 
-        public AuthController(TaskManagerDbContext db, IPasswordService passwordService)
+        public AuthController(TaskManagerDbContext db, IPasswordService passwordService, ITokenService tokenService)
         {
             _db = db;
             _passwordService = passwordService;
+            _tokenService = tokenService;
         }
 
         [HttpPost("login")]
@@ -36,12 +39,16 @@ namespace TaskManager.WebApi.Controllers
                 return Unauthorized(new LoginResponse { Success = false, Message = "Invalid login or password." });
             }
 
+            var token = _tokenService.CreateToken(user);
+
             return Ok(new LoginResponse
             {
                 Success = true,
                 UserId = user.Id,
                 Name = user.Name,
-                Login = user.Login
+                Login = user.Login,
+                Token = token.Token,
+                ExpiresAtUtc = token.ExpiresAtUtc
             });
         }
     }

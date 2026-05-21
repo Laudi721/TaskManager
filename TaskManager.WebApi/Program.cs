@@ -1,7 +1,11 @@
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using TaskManager.Common.Interfaces;
 using TaskManager.Common.Security;
 using TaskManager.Database;
+using TaskManager.WebApi.Security;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,6 +27,7 @@ builder.Services.AddCors(options =>
 builder.Services.AddOpenApi();
 builder.Services.AddDbContext<TaskManagerDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+AddJwtAuthentication(builder);
 AddScoped(builder);
 
 var app = builder.Build();
@@ -39,18 +44,48 @@ app.UseHttpsRedirection();
 
 app.UseCors("AngularDev");
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
 
 app.Run();
 
+// Metoda do rejestracji serwisów o zakresie Scoped
 void AddScoped(WebApplicationBuilder builder)
 {
     builder.Services.AddScoped<IPasswordService, PasswordService>();
+    builder.Services.AddScoped<ITokenService, TokenService>();
     builder.Services.AddScoped<DatabaseSeedData>();
 }
 
+void AddJwtAuthentication(WebApplicationBuilder builder)
+{
+    var jwt = builder.Configuration.GetSection("Jwt");
+    var key = jwt["Key"] ?? throw new InvalidOperationException("Jwt:Key is not configured.");
+
+    builder.Services
+        .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+        .AddJwtBearer(options =>
+        {
+            options.RequireHttpsMetadata = false;
+            options.TokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuer = true,
+                ValidateAudience = true,
+                ValidateLifetime = true,
+                ValidateIssuerSigningKey = true,
+                ValidIssuer = jwt["Issuer"],
+                ValidAudience = jwt["Audience"],
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key)),
+                ClockSkew = TimeSpan.FromMinutes(1)
+            };
+        });
+
+    builder.Services.AddAuthorization();
+}
+
+// Metoda do sprawdzania kompatybilności bazy danych, wykonywania migracji i seeding danych
 void CheckDatabaseCompatibility(WebApplication app)
 {
     using (var scope = app.Services.CreateScope())
@@ -60,10 +95,8 @@ void CheckDatabaseCompatibility(WebApplication app)
         var context = services.GetRequiredService<TaskManagerDbContext>();
         var seeder = services.GetRequiredService<DatabaseSeedData>();
 
-        // migracje (tworzy DB jeśli nie istnieje)
         context.Database.Migrate();
 
-        // seed danych
         seeder.Seed(context);
     }
 }

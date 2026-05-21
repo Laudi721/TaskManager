@@ -1,0 +1,24 @@
+.home-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  &__title {
+    font-weight: 500;
+  }
+
+  &__spacer {
+    flex: 1 1 auto;
+  }
+
+  &__user {
+    font-size: 0.9rem;
+    opacity: 0.9;
+  }
+}
+
+.home-content {
+  display: block;
+  min-height: calc(100vh - 64px);
+  padding: 24px;
+}
