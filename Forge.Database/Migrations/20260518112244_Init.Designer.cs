@@ -5,11 +5,11 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using TaskManager.Database;
+using Forge.Database;
 
 #nullable disable
 
-namespace TaskManager.Database.Migrations
+namespace Forge.Database.Migrations
 {
     [DbContext(typeof(ForgeDbContext))]
     [Migration("20260518112244_Init")]
@@ -55,7 +55,7 @@ namespace TaskManager.Database.Migrations
                     b.ToTable("RoleUser");
                 });
 
-            modelBuilder.Entity("TaskManager.Database.Models.AuditLog", b =>
+            modelBuilder.Entity("Forge.Database.Models.AuditLog", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -91,7 +91,7 @@ namespace TaskManager.Database.Migrations
                     b.ToTable("AuditLog");
                 });
 
-            modelBuilder.Entity("TaskManager.Database.Models.Permissions", b =>
+            modelBuilder.Entity("Forge.Database.Models.Permissions", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -108,7 +108,7 @@ namespace TaskManager.Database.Migrations
                     b.ToTable("Permissions");
                 });
 
-            modelBuilder.Entity("TaskManager.Database.Models.Role", b =>
+            modelBuilder.Entity("Forge.Database.Models.Role", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -125,7 +125,7 @@ namespace TaskManager.Database.Migrations
                     b.ToTable("Role");
                 });
 
-            modelBuilder.Entity("TaskManager.Database.Models.TaskItem", b =>
+            modelBuilder.Entity("Forge.Database.Models.TaskItem", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -154,7 +154,7 @@ namespace TaskManager.Database.Migrations
                     b.ToTable("TaskItem");
                 });
 
-            modelBuilder.Entity("TaskManager.Database.Models.User", b =>
+            modelBuilder.Entity("Forge.Database.Models.User", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -184,13 +184,13 @@ namespace TaskManager.Database.Migrations
 
             modelBuilder.Entity("PermissionsRole", b =>
                 {
-                    b.HasOne("TaskManager.Database.Models.Permissions", null)
+                    b.HasOne("Forge.Database.Models.Permissions", null)
                         .WithMany()
                         .HasForeignKey("PermissionsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("TaskManager.Database.Models.Role", null)
+                    b.HasOne("Forge.Database.Models.Role", null)
                         .WithMany()
                         .HasForeignKey("RolesId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -199,28 +199,28 @@ namespace TaskManager.Database.Migrations
 
             modelBuilder.Entity("RoleUser", b =>
                 {
-                    b.HasOne("TaskManager.Database.Models.Role", null)
+                    b.HasOne("Forge.Database.Models.Role", null)
                         .WithMany()
                         .HasForeignKey("RolesId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("TaskManager.Database.Models.User", null)
+                    b.HasOne("Forge.Database.Models.User", null)
                         .WithMany()
                         .HasForeignKey("UsersId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("TaskManager.Database.Models.AuditLog", b =>
+            modelBuilder.Entity("Forge.Database.Models.AuditLog", b =>
                 {
-                    b.HasOne("TaskManager.Database.Models.TaskItem", "Task")
+                    b.HasOne("Forge.Database.Models.TaskItem", "Task")
                         .WithMany("AuditLogs")
                         .HasForeignKey("TaskId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("TaskManager.Database.Models.User", "User")
+                    b.HasOne("Forge.Database.Models.User", "User")
                         .WithMany("AuditLogs")
                         .HasForeignKey("UserId");
 
@@ -229,21 +229,21 @@ namespace TaskManager.Database.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("TaskManager.Database.Models.TaskItem", b =>
+            modelBuilder.Entity("Forge.Database.Models.TaskItem", b =>
                 {
-                    b.HasOne("TaskManager.Database.Models.User", "User")
+                    b.HasOne("Forge.Database.Models.User", "User")
                         .WithMany("Tasks")
                         .HasForeignKey("UserId");
 
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("TaskManager.Database.Models.TaskItem", b =>
+            modelBuilder.Entity("Forge.Database.Models.TaskItem", b =>
                 {
                     b.Navigation("AuditLogs");
                 });
 
-            modelBuilder.Entity("TaskManager.Database.Models.User", b =>
+            modelBuilder.Entity("Forge.Database.Models.User", b =>
                 {
                     b.Navigation("AuditLogs");
 

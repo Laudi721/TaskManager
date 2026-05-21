@@ -5,7 +5,7 @@ using Microsoft.IdentityModel.Tokens;
 using Forge.Common.Interfaces;
 using Forge.Common.Security;
 using Forge.Database;
-using Forge.WebApi.Security;
+using Forge.Desk.WebApi.Security;
 
 var builder = WebApplication.CreateBuilder(args);
 

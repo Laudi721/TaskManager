@@ -1,6 +1,6 @@
 using Forge.Database.Models;
 
-namespace Forge.WebApi.Security
+namespace Forge.Desk.WebApi.Security
 {
     public record TokenResult(string Token, DateTime ExpiresAtUtc);
 

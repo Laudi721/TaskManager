@@ -1,4 +1,4 @@
-namespace Forge.WebApi.Dtos
+namespace Forge.Desk.WebApi.Dtos
 {
     public class LoginResponse
     {

@@ -2,11 +2,11 @@ using Microsoft.AspNetCore.Mvc;
 using Forge.Common.Interfaces;
 using Forge.Database;
 using Forge.Database.Models;
-using Forge.WebApi.Dtos;
-using Forge.WebApi.Security;
+using Forge.Desk.WebApi.Dtos;
+using Forge.Desk.WebApi.Security;
 using Microsoft.EntityFrameworkCore;
 
-namespace TaskMForgeanager.WebApi.Controllers
+namespace Forge.Desk.WebApi.Controllers
 {
     [ApiController]
     [Route("api/auth")]

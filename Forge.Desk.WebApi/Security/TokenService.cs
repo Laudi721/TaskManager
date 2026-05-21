@@ -4,7 +4,7 @@ using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using Forge.Database.Models;
 
-namespace Forge.WebApi.Security
+namespace Forge.Desk.WebApi.Security
 {
     public class TokenService : ITokenService
     {
