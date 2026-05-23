@@ -1,0 +1,15 @@
+<nav class="open-tabs">
+  @for (tab of tabs(); track tab.route) {
+    <a class="open-tabs__tab"
+       [class.open-tabs__tab--active]="tab.route === activeRoute()"
+       [routerLink]="tab.route">
+      <span class="open-tabs__label">{{ tab.label }}</span>
+      <button class="open-tabs__close"
+              type="button"
+              (click)="close($event, tab.route)"
+              aria-label="Zamknij zakładkę">
+        <mat-icon>close</mat-icon>
+      </button>
+    </a>
+  }
+</nav>

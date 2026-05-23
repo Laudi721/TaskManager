@@ -1,3 +1,5 @@
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using System.Text;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -8,6 +10,7 @@ using Forge.Common.Security;
 using Forge.Database;
 using Forge.Desk.WebApi.Configuration;
 using Forge.Desk.WebApi.Security;
+using Forge.Realtime;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,9 +27,10 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AngularDev", policy =>
     {
-        policy.WithOrigins("http://localhost:4200")
+        policy.WithOrigins("http://localhost:4200", "http://localhost:4300")
               .AllowAnyHeader()
-              .AllowAnyMethod();
+              .AllowAnyMethod()
+              .AllowCredentials();
     });
 });
 
@@ -36,6 +40,8 @@ builder.Services.AddDbContext<ForgeDbContext>(options => options.UseSqlServer(bu
 
 AddJwtAuthentication(builder);
 AddScoped(builder);
+
+builder.Services.AddForgeRealtime(builder.Configuration);
 
 var app = builder.Build();
 
@@ -55,6 +61,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+app.MapForgeRealtime();
 
 app.Run();
 
@@ -89,6 +96,38 @@ void AddJwtAuthentication(WebApplicationBuilder builder)
                 ValidAudience = jwt["Audience"],
                 IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key)),
                 ClockSkew = TimeSpan.FromMinutes(1)
+            };
+
+            options.Events = new JwtBearerEvents
+            {
+                OnMessageReceived = context =>
+                {
+                    var accessToken = context.Request.Query["access_token"];
+                    var path = context.HttpContext.Request.Path;
+                    if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/hubs"))
+                    {
+                        context.Token = accessToken;
+                    }
+                    return Task.CompletedTask;
+                },
+                OnTokenValidated = async context =>
+                {
+                    var sub = context.Principal?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                    var sid = context.Principal?.FindFirst(JwtRegisteredClaimNames.Sid)?.Value;
+
+                    if (!int.TryParse(sub, out var userId) || string.IsNullOrWhiteSpace(sid))
+                    {
+                        context.Fail("Token is missing required claims.");
+                        return;
+                    }
+
+                    var sessions = context.HttpContext.RequestServices.GetRequiredService<ISessionRegistry>();
+                    var current = await sessions.IsCurrentAsync(userId, sid, context.HttpContext.RequestAborted);
+                    if (!current)
+                    {
+                        context.Fail("Session has been revoked.");
+                    }
+                }
             };
         });
 

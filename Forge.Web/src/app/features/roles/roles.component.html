@@ -1,5 +1,9 @@
 <header class="roles__header">
   <h2>Role</h2>
+  <span class="roles__spacer"></span>
+  <button mat-icon-button type="button" (click)="refresh()" [disabled]="loading()" aria-label="Odśwież">
+    <mat-icon>refresh</mat-icon>
+  </button>
   <button mat-flat-button color="primary" type="button" (click)="addRole()">
     <mat-icon>add</mat-icon>
     <span>Dodaj rolę</span>

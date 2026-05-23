@@ -1,12 +1,14 @@
 <mat-toolbar color="primary" class="home-toolbar">
   <span class="home-toolbar__title">Forge.Desk</span>
-  <span class="home-toolbar__spacer"></span>
+  <app-open-tabs-bar class="home-toolbar__tabs"></app-open-tabs-bar>
   @if (currentUser(); as user) {
     <span class="home-toolbar__user">{{ user.name ?? user.login }}</span>
   }
   <button mat-stroked-button color="accent" type="button" (click)="logout()">
     <mat-icon>logout</mat-icon>
-    <span>Wyloguj</span>
+  </button>
+  <button mat-stroked-button color="accent" type="button" (click)="settings()">
+    <mat-icon>settings</mat-icon>
   </button>
 </mat-toolbar>
 

@@ -1,0 +1,41 @@
+:host {
+  display: block;
+  max-width: 560px;
+}
+
+.user-form__header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+
+  h2 {
+    margin: 0;
+  }
+}
+
+.user-form {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  mat-form-field {
+    width: 100%;
+  }
+}
+
+.user-form__error {
+  color: #c62828;
+  margin: 4px 0;
+}
+
+.user-form__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 8px;
+
+  button {
+    min-width: 110px;
+  }
+}

@@ -1,6 +1,6 @@
+using Forge.Common.Dtos;
 using Forge.Database;
 using Forge.Database.Models;
-using Forge.Desk.WebApi.Dtos;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;

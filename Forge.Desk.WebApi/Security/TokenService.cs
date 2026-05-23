@@ -15,13 +15,21 @@ namespace Forge.Desk.WebApi.Security
             _config = config;
         }
 
-        public TokenResult CreateToken(User user)
+        public TimeSpan TokenLifetime
+        {
+            get
+            {
+                var minutes = int.TryParse(_config.GetSection("Jwt")["ExpiresMinutes"], out var m) ? m : 120;
+                return TimeSpan.FromMinutes(minutes);
+            }
+        }
+
+        public TokenResult CreateToken(User user, string sessionId)
         {
             var jwtSection = _config.GetSection("Jwt");
             var key = jwtSection["Key"] ?? throw new InvalidOperationException("Jwt:Key is not configured.");
             var issuer = jwtSection["Issuer"];
             var audience = jwtSection["Audience"];
-            var expiresMinutes = int.TryParse(jwtSection["ExpiresMinutes"], out var m) ? m : 120;
 
             var claims = new List<Claim>
             {
@@ -29,13 +37,14 @@ namespace Forge.Desk.WebApi.Security
                 new(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new(ClaimTypes.Name, user.Login ?? string.Empty),
                 new("name", user.Name ?? string.Empty),
+                new(JwtRegisteredClaimNames.Sid, sessionId),
                 new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
             };
 
             var signingKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key));
             var credentials = new SigningCredentials(signingKey, SecurityAlgorithms.HmacSha256);
 
-            var expiresAt = DateTime.UtcNow.AddMinutes(expiresMinutes);
+            var expiresAt = DateTime.UtcNow.Add(TokenLifetime);
 
             var token = new JwtSecurityToken(
                 issuer: issuer,

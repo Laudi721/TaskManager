@@ -9,6 +9,12 @@ services:
     volumes:
       - dbdata:/var/opt/mssql
 
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    restart: unless-stopped
+
   api:
     build:
       context: .
@@ -17,10 +23,17 @@ services:
       ASPNETCORE_ENVIRONMENT: Development
       ASPNETCORE_URLS: "http://+:8080"
       ConnectionStrings__DefaultConnection: "Server=db,1433;Database=TaskManagerDb;User Id=sa;Password=NoweSilneHaslo123!;TrustServerCertificate=True;MultipleActiveResultSets=true"
+      Jwt__Issuer: "${JWT_ISSUER:-Forge.WebApi}"
+      Jwt__Audience: "${JWT_AUDIENCE:-Forge.Web}"
+      Jwt__Key: "${JWT_KEY:-CHANGE_ME_TO_A_LONG_RANDOM_SECRET_AT_LEAST_32_CHARS_LONG_!@#}"
+      Jwt__ExpiresMinutes: "${JWT_EXPIRES_MINUTES:-120}"
+      Realtime__Redis: "redis:6379"
+      Realtime__ChannelPrefix: "forge"
     ports:
       - "8080:8080"
     depends_on:
       - db
+      - redis
     restart: unless-stopped
 
   web:

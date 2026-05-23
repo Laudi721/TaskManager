@@ -46,6 +46,7 @@ namespace Forge.Desk.WebApi.Configuration
             {
                 MenuName = element.Attribute("menuName")?.Value ?? string.Empty,
                 Type = ParseType(element.Attribute("type")?.Value),
+                Icon = element.Attribute("icon")?.Value,
                 Controller = element.Attribute("controller")?.Value,
                 Action = element.Attribute("action")?.Value,
                 Route = element.Attribute("route")?.Value,

@@ -5,12 +5,15 @@
 .roles__header {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 16px;
+  gap: 8px;
 
   h2 {
     margin: 0;
   }
+}
+
+.roles__spacer {
+  flex: 1 1 auto;
 }
 
 .error {
