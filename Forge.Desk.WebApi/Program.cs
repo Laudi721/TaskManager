@@ -1,17 +1,24 @@
 using System.Text;
+using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Forge.Common.Interfaces;
 using Forge.Common.Security;
 using Forge.Database;
+using Forge.Desk.WebApi.Configuration;
 using Forge.Desk.WebApi.Security;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers();
+builder.Services
+    .AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    });
 
 builder.Services.AddCors(options =>
 {
@@ -57,6 +64,9 @@ void AddScoped(WebApplicationBuilder builder)
     builder.Services.AddScoped<IPasswordService, PasswordService>();
     builder.Services.AddScoped<ITokenService, TokenService>();
     builder.Services.AddScoped<DatabaseSeedData>();
+
+    builder.Services.Configure<MenuOptions>(builder.Configuration.GetSection(MenuOptions.SectionName));
+    builder.Services.AddSingleton<IMenuProvider, XmlMenuProvider>();
 }
 
 void AddJwtAuthentication(WebApplicationBuilder builder)

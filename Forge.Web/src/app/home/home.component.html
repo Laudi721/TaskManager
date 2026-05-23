@@ -1,5 +1,5 @@
 <mat-toolbar color="primary" class="home-toolbar">
-  <span class="home-toolbar__title">TaskManager</span>
+  <span class="home-toolbar__title">Forge.Desk</span>
   <span class="home-toolbar__spacer"></span>
   @if (currentUser(); as user) {
     <span class="home-toolbar__user">{{ user.name ?? user.login }}</span>
@@ -10,4 +10,14 @@
   </button>
 </mat-toolbar>
 
-<main class="home-content"></main>
+<mat-sidenav-container class="home-shell">
+  <mat-sidenav mode="side" opened class="home-shell__sidenav">
+    <app-menu></app-menu>
+  </mat-sidenav>
+
+  <mat-sidenav-content>
+    <main class="home-content">
+      <router-outlet></router-outlet>
+    </main>
+  </mat-sidenav-content>
+</mat-sidenav-container>

@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<root>
+	<Menu>
+		<MenuItem menuName="Home" type="View" controller="HomeController" action="Index" route="/homex" />
+		<MenuItem menuName="Resources" type="Group">
+			<MenuItem menuName="User" type="View" controller="UserController" action="Index" route="/resources/users" />
+			<MenuItem menuName="Resources" type="Group">
+				<MenuItem menuName="Role" type="View" controller="RoleController" action="Index" route="/resources/roles" />
+			</MenuItem>
+		</MenuItem>
+		<MenuItem menuName="Administration" type="Group">
+			<MenuItem menuName="Settings" type="View" controller="SettingsController" action="Index" route="/admin/settings" />
+		</MenuItem>
+	</Menu>
+</root>

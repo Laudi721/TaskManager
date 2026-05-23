@@ -1,0 +1,23 @@
+:host {
+  display: block;
+}
+
+.roles__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+
+  h2 {
+    margin: 0;
+  }
+}
+
+.error {
+  color: #c62828;
+}
+
+table {
+  width: 100%;
+  margin-top: 12px;
+}

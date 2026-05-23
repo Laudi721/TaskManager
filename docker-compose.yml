@@ -28,7 +28,7 @@ services:
       context: ./Forge.Web
       dockerfile: Dockerfile
     ports:
-      - "4200:80"
+      - "4300:80"
     depends_on:
       - api
     restart: unless-stopped

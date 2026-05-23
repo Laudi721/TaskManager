@@ -1,0 +1,22 @@
+@if (item.type === 'Group') {
+  <mat-expansion-panel class="menu-item menu-item--group">
+    <mat-expansion-panel-header>
+      <mat-panel-title>{{ item.menuName }}</mat-panel-title>
+    </mat-expansion-panel-header>
+
+    <div class="menu-item__children">
+      @for (child of item.children; track child.menuName) {
+        <app-menu-item [item]="child"></app-menu-item>
+      }
+    </div>
+  </mat-expansion-panel>
+} @else {
+  <mat-nav-list class="menu-item menu-item--leaf">
+    <a mat-list-item
+       [routerLink]="item.route"
+       routerLinkActive="menu-item--active">
+      <mat-icon matListItemIcon>chevron_right</mat-icon>
+      <span matListItemTitle>{{ item.menuName }}</span>
+    </a>
+  </mat-nav-list>
+}
