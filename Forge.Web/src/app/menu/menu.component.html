@@ -1,0 +1,9 @@
+@if (items().length === 0) {
+  <p class="menu__empty">Brak pozycji menu.</p>
+}
+
+<mat-accordion class="menu" multi>
+  @for (item of items(); track item.menuName) {
+    <app-menu-item [item]="item"></app-menu-item>
+  }
+</mat-accordion>

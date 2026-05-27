@@ -1,0 +1,53 @@
+:host {
+  display: block;
+  max-width: 640px;
+}
+
+.user-settings__header {
+  margin-bottom: 16px;
+
+  h2 {
+    margin: 0;
+  }
+}
+
+.user-settings__section {
+  margin-bottom: 16px;
+}
+
+.theme-options {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.theme-option {
+  &__row {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  &__swatch {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    flex-shrink: 0;
+  }
+
+  &__label {
+    font-size: 0.95rem;
+  }
+}
+
+.user-settings__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 16px;
+
+  button {
+    min-width: 120px;
+  }
+}

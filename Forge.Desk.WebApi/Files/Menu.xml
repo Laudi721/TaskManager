@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+	<Menu>
+		<MenuItem menuName="Konfiguracja systemu" type="Group" icon="settings">
+			<MenuItem menuName="Użytkownicy" type="View" route="/users" />
+			<MenuItem menuName="Role" type="View" route="/roles" />
+		</MenuItem>
+		<MenuItem menuName="Konfiguracja zakładu" type="Group" icon="factory">
+			<MenuItem menuName="Typ zlecenia" type="View" route="/config/order-types" />
+			<MenuItem menuName="Typy operacji" type="View" route="/config/operation-types" />
+			<MenuItem menuName="Definicje stanowisk roboczych" type="View" route="/config/workstations" />
+		</MenuItem>
+		<MenuItem menuName="Zarządzanie halami" type="Group" icon="warehouse">
+			<MenuItem menuName="Hale produkcyjne" type="View" route="/halls" />
+		</MenuItem>
+	</Menu>
+</root>

@@ -1,0 +1,24 @@
+##Zbuduj obraz z Dockerfile. Kontekst to folder, od którego liczą się ścieżki COPY (na końcu, zwykle .).
+docker build -f <scieżka do dockerfile> -t <nazwa> <sciezka do solucji>
+		docker build -f TaskManager.WebApi/Dockerfile -t taskmanager-api . - bedac w folderze solucji
+		docker build -f Dockerfile - taskmanager-api .. - bedac w folderze TaskManager.WebApi - trzeba sie cofnac do solucji, dlatego na koncu ..
+		
+		docker build Komenda budowania obrazu
+		-f TaskManager.WebApi/Dockerfile Ścieżka do pliku Dockerfile (jeśli nie jest w głównym katalogu)
+		-t taskmanager-api Tag/nazwa obrazu
+		. Kontekst budowania (bieżący katalog / nawigacja do folderu solucji)
+		
+docker pull <obraz>						Pobierz obraz z rejestru bez uruchamiania (np. docker pull nginx:alpine).
+docker images							Lista lokalnych obrazów.
+docker image rm <obraz>					Usuń obraz.
+
+docker compose build			Przebuduj obrazy bez startu.	
+docker compose up				Postaw stack. Zbuduj obrazy jeśli trzeba, stwórz sieć, wolumeny, kontenery, podłącz, uruchom. Loguje w terminalu.
+docker compose up -d			W tle.
+docker compose up --build		Wymuś rebuild obrazów przed startem. Używaj po edycji kodu.
+docker compose up --build -d	Codzienna komenda — build, start, tle.
+docker compose down				Zatrzymaj i usuń kontenery + sieć. Wolumeny zostają.
+docker compose down -v			+ usuń wolumeny. Tracisz dane.
+docker compose stop				Zatrzymaj (kontenery zostają, nic nie usuwa).
+docker compose start			Wskrześ stopnięty stack.
+docker compose restart			Restart wszystkich serwisów.

@@ -1,0 +1,23 @@
+@if (item.type === 'Group') {
+  <mat-expansion-panel class="menu-item menu-item--group" hideToggle="false">
+    <mat-expansion-panel-header class="menu-item__header" collapsedHeight="44px" expandedHeight="44px">
+      <mat-panel-title class="menu-item__title">
+        <mat-icon class="menu-item__icon">{{ item.icon || 'apartment' }}</mat-icon>
+        <span class="menu-item__label">{{ item.menuName }}</span>
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+
+    <div class="menu-item__children">
+      @for (child of item.children; track child.menuName) {
+        <app-menu-item [item]="child"></app-menu-item>
+      }
+    </div>
+  </mat-expansion-panel>
+} @else {
+  <a class="menu-item menu-item--leaf"
+     [routerLink]="item.route"
+     routerLinkActive="menu-item--active">
+    <mat-icon class="menu-item__leaf-icon">chevron_right</mat-icon>
+    <span class="menu-item__leaf-label">{{ item.menuName }}</span>
+  </a>
+}

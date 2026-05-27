@@ -1,0 +1,41 @@
+<header class="user-settings__header">
+  <h2>Ustawienia użytkownika</h2>
+</header>
+
+<form [formGroup]="form" (ngSubmit)="save()" novalidate>
+  <mat-card class="user-settings__section">
+    <mat-card-header>
+      <mat-card-title>Motyw kolorystyczny</mat-card-title>
+      <mat-card-subtitle>Podgląd zostanie zastosowany od razu, ale zapisuje się dopiero po kliknięciu „Zapisz".</mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      <mat-radio-group
+        class="theme-options"
+        formControlName="themePreference">
+        @for (option of available; track option.id) {
+          <mat-radio-button [value]="option.id" class="theme-option">
+            <span class="theme-option__row">
+              <span class="theme-option__swatch" [style.background]="option.swatch"></span>
+              <span class="theme-option__label">{{ option.label }}</span>
+            </span>
+          </mat-radio-button>
+        }
+      </mat-radio-group>
+    </mat-card-content>
+  </mat-card>
+
+  <div class="user-settings__actions">
+    <button mat-stroked-button type="button" (click)="cancel()" [disabled]="!dirty() || saving()">
+      Anuluj
+    </button>
+    <button mat-flat-button color="primary" type="submit" [disabled]="!dirty() || saving()">
+      @if (saving()) {
+        <mat-spinner diameter="18"></mat-spinner>
+      } @else {
+        <mat-icon>save</mat-icon>
+        <span>Zapisz</span>
+      }
+    </button>
+  </div>
+</form>

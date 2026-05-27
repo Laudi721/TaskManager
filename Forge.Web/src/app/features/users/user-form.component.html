@@ -1,0 +1,65 @@
+<header class="user-form__header">
+  <button mat-icon-button type="button" (click)="cancel()" aria-label="Powrót">
+    <mat-icon>arrow_back</mat-icon>
+  </button>
+  <h2>Nowy użytkownik</h2>
+</header>
+
+<form class="user-form" [formGroup]="form" (ngSubmit)="submit()" novalidate>
+  <mat-form-field appearance="outline">
+    <mat-label>Login</mat-label>
+    <input matInput type="text" formControlName="login" autocomplete="off" />
+    @if (form.controls.login.touched && form.controls.login.hasError('required')) {
+      <mat-error>Login jest wymagany.</mat-error>
+    }
+    @if (form.controls.login.touched && form.controls.login.hasError('minlength')) {
+      <mat-error>Login musi mieć co najmniej 3 znaki.</mat-error>
+    }
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Imię i nazwisko</mat-label>
+    <input matInput type="text" formControlName="name" autocomplete="off" />
+    @if (form.controls.name.touched && form.controls.name.hasError('required')) {
+      <mat-error>Imię i nazwisko jest wymagane.</mat-error>
+    }
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Hasło</mat-label>
+    <input matInput type="password" formControlName="password" autocomplete="new-password" />
+    @if (form.controls.password.touched && form.controls.password.hasError('required')) {
+      <mat-error>Hasło jest wymagane.</mat-error>
+    }
+    @if (form.controls.password.touched && form.controls.password.hasError('minlength')) {
+      <mat-error>Hasło musi mieć co najmniej 6 znaków.</mat-error>
+    }
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Role</mat-label>
+    <mat-select formControlName="roleIds" multiple>
+      @for (role of availableRoles(); track role.id) {
+        <mat-option [value]="role.id">{{ role.name }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+
+  @if (error()) {
+    <p class="user-form__error">{{ error() }}</p>
+  }
+
+  <div class="user-form__actions">
+    <button mat-stroked-button type="button" (click)="cancel()" [disabled]="submitting()">
+      Anuluj
+    </button>
+    <button mat-flat-button color="primary" type="submit" [disabled]="submitting()">
+      @if (submitting()) {
+        <mat-spinner diameter="18"></mat-spinner>
+      } @else {
+        <mat-icon>save</mat-icon>
+        <span>Zapisz</span>
+      }
+    </button>
+  </div>
+</form>
