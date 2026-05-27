@@ -4,12 +4,24 @@
   @if (currentUser(); as user) {
     <span class="home-toolbar__user">{{ user.name ?? user.login }}</span>
   }
-  <button mat-stroked-button color="accent" type="button" (click)="logout()">
-    <mat-icon>logout</mat-icon>
+  <button mat-icon-button type="button" [matMenuTriggerFor]="userMenu" aria-label="Menu użytkownika">
+    <mat-icon>account_circle</mat-icon>
   </button>
-  <button mat-stroked-button color="accent" type="button" (click)="settings()">
-    <mat-icon>settings</mat-icon>
-  </button>
+  <mat-menu #userMenu="matMenu" xPosition="before">
+    <button mat-menu-item type="button" (click)="userSettings()">
+      <mat-icon>settings</mat-icon>
+      <span>Ustawienia użytkownika</span>
+    </button>
+    <button mat-menu-item type="button" (click)="globalSettings()">
+      <mat-icon>tune</mat-icon>
+      <span>Ustawienia globalne</span>
+    </button>
+    <mat-divider></mat-divider>
+    <button mat-menu-item type="button" (click)="logout()">
+      <mat-icon>logout</mat-icon>
+      <span>Wyloguj</span>
+    </button>
+  </mat-menu>
 </mat-toolbar>
 
 <mat-sidenav-container class="home-shell">

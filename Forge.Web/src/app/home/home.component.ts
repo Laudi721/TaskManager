@@ -5,6 +5,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatDividerModule } from '@angular/material/divider';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { AuthService } from '../auth/auth.service';
 import { MenuComponent } from '../menu/menu.component';
@@ -20,6 +22,8 @@ import { RealtimeService } from '../realtime/realtime.service';
     MatIconModule,
     MatToolbarModule,
     MatSidenavModule,
+    MatMenuModule,
+    MatDividerModule,
     MatSnackBarModule,
     MenuComponent,
     OpenTabsBarComponent,
@@ -36,6 +40,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   private readonly snack = inject(MatSnackBar);
 
   private revokedSub?: Subscription;
+  private backendDownSub?: Subscription;
 
   readonly currentUser = this.auth.currentUser;
 
@@ -44,10 +49,14 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.revokedSub = this.realtime.sessionRevoked$.subscribe(() => {
       this.handleSessionRevoked();
     });
+    this.backendDownSub = this.realtime.backendDown$.subscribe(() => {
+      this.handleBackendDown();
+    });
   }
 
   ngOnDestroy(): void {
     this.revokedSub?.unsubscribe();
+    this.backendDownSub?.unsubscribe();
     this.realtime.stop();
   }
 
@@ -58,13 +67,15 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.router.navigateByUrl('/login');
   }
 
-  settings(): void {
+  userSettings(): void {
+    this.router.navigateByUrl('/settings/user');
+  }
 
+  globalSettings(): void {
+    // TODO: nawigacja do ustawień globalnych gdy ekran powstanie
   }
 
   private handleSessionRevoked(): void {
-    // Drop everything in flight, clear local state, force the user back to login.
-    // Any unsaved form changes are lost — by design (single-session enforcement).
     this.realtime.stop();
     this.openTabs.clearAll();
     this.auth.logout();
@@ -72,6 +83,18 @@ export class HomeComponent implements OnInit, OnDestroy {
       'Twoja sesja została zakończona, ponieważ zalogowano się z innego miejsca.',
       'OK',
       { duration: 6000 }
+    );
+    this.router.navigateByUrl('/login');
+  }
+
+  private handleBackendDown(): void {
+    this.realtime.stop();
+    this.openTabs.clearAll();
+    this.auth.logout();
+    this.snack.open(
+      'Utracono połączenie z serwerem. Spróbuj zalogować się ponownie za chwilę.',
+      'OK',
+      { duration: 0 }
     );
     this.router.navigateByUrl('/login');
   }

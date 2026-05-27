@@ -1,5 +1,6 @@
-import { Component, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { ThemeService } from './theme/theme.service';
 
 @Component({
   selector: 'app-root',
@@ -8,5 +9,8 @@ import { RouterOutlet } from '@angular/router';
   styleUrl: './app.scss'
 })
 export class App {
+  // Eager instantiation so the saved theme is applied to body class before any view renders.
+  private readonly theme = inject(ThemeService);
+
   protected readonly title = signal('TaskManager.Web');
 }

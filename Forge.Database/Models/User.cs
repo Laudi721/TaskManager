@@ -31,6 +31,12 @@ namespace Forge.Database.Models
         public bool IsArchive { get; set; }
 
         /// <summary>
+        /// Identyfikator wybranego motywu kolorystycznego (np. "azure", "green").
+        /// Null = użytkownik nie wybrał, stosuje się domyślny motyw aplikacji.
+        /// </summary>
+        public string? ThemePreference { get; set; }
+
+        /// <summary>
         /// User roles
         /// </summary>
         public List<Role> Roles { get; set; } = new List<Role>();

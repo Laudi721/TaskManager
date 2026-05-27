@@ -9,5 +9,6 @@ namespace Forge.Common.Dtos
         public string? Name { get; set; }
         public string? Token { get; set; }
         public DateTime? ExpiresAtUtc { get; set; }
+        public UserPreferencesDto? Preferences { get; set; }
     }
 }

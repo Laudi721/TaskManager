@@ -8,6 +8,8 @@ export interface EntityChangedEvent {
   payload?: unknown;
 }
 
+const BACKEND_DOWN_GRACE_PERIOD_MS = 30_000;
+
 @Injectable({ providedIn: 'root' })
 export class RealtimeService {
   private readonly auth = inject(AuthService);
@@ -27,16 +29,27 @@ export class RealtimeService {
   private readonly _sessionRevoked$ = new Subject<{ reason?: string }>();
   readonly sessionRevoked$ = this._sessionRevoked$.asObservable();
 
+  private readonly _backendDown$ = new Subject<void>();
+  readonly backendDown$ = this._backendDown$.asObservable();
+
+  private backendDownTimer: ReturnType<typeof setTimeout> | null = null;
+  private userInitiatedStop = false;
+
   async start(): Promise<void> {
     if (this.connection && this.connection.state !== HubConnectionState.Disconnected) {
       return;
     }
 
+    this.userInitiatedStop = false;
+
     this.connection = new HubConnectionBuilder()
       .withUrl(this.hubUrl, {
         accessTokenFactory: () => this.auth.getToken() ?? ''
       })
-      .withAutomaticReconnect()
+      .withAutomaticReconnect({
+        nextRetryDelayInMilliseconds: ctx =>
+          ctx.elapsedMilliseconds < BACKEND_DOWN_GRACE_PERIOD_MS ? 2000 : null
+      })
       .configureLogging(LogLevel.Warning)
       .build();
 
@@ -48,13 +61,25 @@ export class RealtimeService {
       this._sessionRevoked$.next(payload ?? {});
     });
 
+    this.connection.onreconnecting(() => {
+      this._connected.set(false);
+      this.armBackendDownTimer();
+    });
+
     this.connection.onreconnected(() => {
       this._connected.set(true);
+      this.cancelBackendDownTimer();
       this._reconnected$.next();
     });
 
-    this.connection.onreconnecting(() => this._connected.set(false));
-    this.connection.onclose(() => this._connected.set(false));
+    this.connection.onclose(() => {
+      this._connected.set(false);
+      this.cancelBackendDownTimer();
+      if (!this.userInitiatedStop) {
+        this._backendDown$.next();
+      }
+      this.userInitiatedStop = false;
+    });
 
     try {
       await this.connection.start();
@@ -62,14 +87,10 @@ export class RealtimeService {
     } catch (err) {
       console.warn('[realtime] connection failed:', err);
       this._connected.set(false);
+      this.armBackendDownTimer();
     }
   }
 
-  /**
-   * Subscribe to changes of one or more entities. The callback runs whenever any of the
-   * specified entities emits an `entity-changed` event. Use this to declare which entities
-   * a cached projection depends on (e.g. RoleDto.usersCount depends on both 'roles' and 'users').
-   */
   on(entities: string | string[], callback: (entity: string) => void): Subscription {
     const names = Array.isArray(entities) ? entities : [entities];
     return this.events$
@@ -78,6 +99,8 @@ export class RealtimeService {
   }
 
   async stop(): Promise<void> {
+    this.userInitiatedStop = true;
+    this.cancelBackendDownTimer();
     if (!this.connection) {
       return;
     }
@@ -86,6 +109,21 @@ export class RealtimeService {
     } finally {
       this.connection = null;
       this._connected.set(false);
+    }
+  }
+
+  private armBackendDownTimer(): void {
+    if (this.backendDownTimer) return;
+    this.backendDownTimer = setTimeout(() => {
+      this.backendDownTimer = null;
+      this._backendDown$.next();
+    }, BACKEND_DOWN_GRACE_PERIOD_MS);
+  }
+
+  private cancelBackendDownTimer(): void {
+    if (this.backendDownTimer) {
+      clearTimeout(this.backendDownTimer);
+      this.backendDownTimer = null;
     }
   }
 }

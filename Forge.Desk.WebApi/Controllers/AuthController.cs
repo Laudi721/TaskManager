@@ -70,7 +70,11 @@ namespace Forge.Desk.WebApi.Controllers
                 Name = user.Name,
                 Login = user.Login,
                 Token = token.Token,
-                ExpiresAtUtc = token.ExpiresAtUtc
+                ExpiresAtUtc = token.ExpiresAtUtc,
+                Preferences = new UserPreferencesDto
+                {
+                    ThemePreference = user.ThemePreference
+                }
             });
         }
     }

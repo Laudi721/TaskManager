@@ -7,6 +7,7 @@ import { UsersComponent } from './features/users/users.component';
 import { UserFormComponent } from './features/users/user-form.component';
 import { RolesComponent } from './features/roles/roles.component';
 import { SettingsComponent } from './features/settings/settings.component';
+import { UserSettingsComponent } from './features/user-settings/user-settings.component';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -20,6 +21,7 @@ export const routes: Routes = [
       { path: 'users/new', component: UserFormComponent },
       { path: 'roles', component: RolesComponent },
       { path: 'admin/settings', component: SettingsComponent },
+      { path: 'settings/user', component: UserSettingsComponent },
       { path: '', pathMatch: 'full', redirectTo: 'home' }
     ]
   },
