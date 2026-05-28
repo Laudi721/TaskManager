@@ -1,4 +1,6 @@
-namespace Forge.Desk.WebApi.Configuration
+using Forge.Common.Dtos;
+
+namespace Forge.Application.Common
 {
     public interface IMenuProvider
     {

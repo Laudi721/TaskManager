@@ -3,11 +3,15 @@ using System.Security.Claims;
 using System.Text;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Forge.Application;
+using Forge.Application.Common;
 using Forge.Common.Interfaces;
 using Forge.Common.Security;
 using Forge.Database;
+using Forge.Database.SoftDelete;
 using Forge.Desk.WebApi.Configuration;
 using Forge.Desk.WebApi.Security;
 using Forge.Realtime;
@@ -17,7 +21,10 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services
-    .AddControllers()
+    .AddControllers(options =>
+    {
+        options.Conventions.Add(new RouteTokenTransformerConvention(new SlugifyParameterTransformer()));
+    })
     .AddJsonOptions(options =>
     {
         options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
@@ -36,12 +43,16 @@ builder.Services.AddCors(options =>
 
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
-builder.Services.AddDbContext<ForgeDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddSingleton<SoftDeleteInterceptor>();
+builder.Services.AddDbContext<ForgeDbContext>((sp, options) => options
+    .UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
+    .AddInterceptors(sp.GetRequiredService<SoftDeleteInterceptor>()));
 
 AddJwtAuthentication(builder);
 AddScoped(builder);
 
 builder.Services.AddForgeRealtime(builder.Configuration);
+builder.Services.AddForgeApplication();
 
 var app = builder.Build();
 

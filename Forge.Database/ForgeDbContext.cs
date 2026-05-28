@@ -1,5 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
+using Microsoft.EntityFrameworkCore;
 using Forge.Database.Models;
+using Forge.Database.SoftDelete;
 
 namespace Forge.Database
 {
@@ -7,7 +9,7 @@ namespace Forge.Database
     {
         public ForgeDbContext()
         {
-            
+
         }
 
         public ForgeDbContext(DbContextOptions<ForgeDbContext> options) : base(options)
@@ -24,6 +26,16 @@ namespace Forge.Database
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<User>()
+                .HasIndex(u => u.Login)
+                .IsUnique()
+                .HasFilter("IsDeleted = 0");
+
+            modelBuilder.Entity<Role>()
+                .HasIndex(r => r.Name)
+                .IsUnique()
+                .HasFilter("[IsDeleted] = 0");
 
             modelBuilder.Entity<User>()
                 .HasMany(a => a.Roles)
@@ -44,6 +56,26 @@ namespace Forge.Database
             modelBuilder.Entity<AuditLog>()
                 .HasOne(a => a.Task)
                 .WithMany(a => a.AuditLogs);
+
+            ApplySoftDeleteFilter(modelBuilder);
+        }
+
+        private static void ApplySoftDeleteFilter(ModelBuilder modelBuilder)
+        {
+            foreach (var entityType in modelBuilder.Model.GetEntityTypes())
+            {
+                if (!typeof(ISoftDeletable).IsAssignableFrom(entityType.ClrType))
+                {
+                    continue;
+                }
+
+                var parameter = Expression.Parameter(entityType.ClrType, "e");
+                var property = Expression.Property(parameter, nameof(ISoftDeletable.IsDeleted));
+                var notDeleted = Expression.Not(property);
+                var lambda = Expression.Lambda(notDeleted, parameter);
+
+                modelBuilder.Entity(entityType.ClrType).HasQueryFilter(lambda);
+            }
         }
     }
 }

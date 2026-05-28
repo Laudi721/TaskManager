@@ -1,25 +1,25 @@
-using Forge.Desk.WebApi.Configuration;
-using Microsoft.AspNetCore.Authorization;
+using Forge.Application.Features.Menu.Queries;
+using Forge.Common.Dtos;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Forge.Desk.WebApi.Controllers
 {
-    [ApiController]
-    [Authorize]
-    [Route("api/menu")]
-    public class MenuController : ControllerBase
+    public class MenuController : ForgeBaseController
     {
-        private readonly IMenuProvider _menuProvider;
+        private readonly ISender _mediator;
 
-        public MenuController(IMenuProvider menuProvider)
+        public MenuController(ISender mediator)
         {
-            _menuProvider = menuProvider;
+            _mediator = mediator;
         }
 
         [HttpGet]
-        public ActionResult<IReadOnlyList<MenuItem>> Get()
+        public async Task<ActionResult<IReadOnlyList<MenuItem>>> Get(CancellationToken cancellationToken)
         {
-            return Ok(_menuProvider.GetMenu());
+            var menu = await _mediator.Send(new GetMenuQuery(), cancellationToken);
+
+            return Ok(menu);
         }
     }
 }

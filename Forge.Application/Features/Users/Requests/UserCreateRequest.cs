@@ -1,6 +1,6 @@
-namespace Forge.Common.Dtos
+namespace Forge.Application.Features.Users.Requests
 {
-    public class UserCreateDto
+    public class UserCreateRequest
     {
         public string Login { get; set; } = string.Empty;
         public string Name { get; set; } = string.Empty;

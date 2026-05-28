@@ -1,4 +1,6 @@
 using System.Xml.Linq;
+using Forge.Application.Common;
+using Forge.Common.Dtos;
 using Microsoft.Extensions.Options;
 
 namespace Forge.Desk.WebApi.Configuration

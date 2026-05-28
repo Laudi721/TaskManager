@@ -1,4 +1,4 @@
-namespace Forge.Common.Dtos
+namespace Forge.Application.Features.Auth.Requests
 {
     public class LoginRequest
     {

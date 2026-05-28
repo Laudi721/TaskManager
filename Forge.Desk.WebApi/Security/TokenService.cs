@@ -2,6 +2,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
+using Forge.Application.Common;
 using Forge.Database.Models;
 
 namespace Forge.Desk.WebApi.Security

@@ -1,0 +1,40 @@
+<header class="role-form__header">
+  <button mat-icon-button type="button" (click)="cancel()" aria-label="Powrót">
+    <mat-icon>arrow_back</mat-icon>
+  </button>
+  <h2>Nowa rola</h2>
+</header>
+
+<form class="role-form" [formGroup]="form" (ngSubmit)="submit()" novalidate>
+  <mat-form-field appearance="outline">
+    <mat-label>Nazwa</mat-label>
+    <input matInput type="text" formControlName="name" autocomplete="off" />
+    @if (form.controls.name.touched && form.controls.name.hasError('required')) {
+      <mat-error>Nazwa jest wymagana.</mat-error>
+    }
+    @if (form.controls.name.touched && form.controls.name.hasError('minlength')) {
+      <mat-error>Nazwa musi mieć co najmniej 2 znaki.</mat-error>
+    }
+    @if (form.controls.name.touched && form.controls.name.hasError('server')) {
+      <mat-error>{{ form.controls.name.getError('server') }}</mat-error>
+    }
+  </mat-form-field>
+
+  @if (error()) {
+    <p class="role-form__error">{{ error() }}</p>
+  }
+
+  <div class="role-form__actions">
+    <button mat-stroked-button type="button" (click)="cancel()" [disabled]="submitting()">
+      Anuluj
+    </button>
+    <button mat-flat-button color="primary" type="submit" [disabled]="submitting()">
+      @if (submitting()) {
+        <mat-spinner diameter="18"></mat-spinner>
+      } @else {
+        <mat-icon>save</mat-icon>
+        <span>Zapisz</span>
+      }
+    </button>
+  </div>
+</form>

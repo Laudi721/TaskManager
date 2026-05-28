@@ -1,10 +1,9 @@
-using System.Security.Claims;
+using Forge.Application.Features.UserSettings.Commands;
+using Forge.Application.Features.UserSettings.Queries;
+using Forge.Application.Features.UserSettings.Requests;
 using Forge.Common.Dtos;
-using Forge.Database;
-using Forge.Database.Models;
-using Microsoft.AspNetCore.Authorization;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace Forge.Desk.WebApi.Controllers
 {
@@ -13,83 +12,48 @@ namespace Forge.Desk.WebApi.Controllers
     /// dotyczą obecnie zalogowanego użytkownika — userId czytamy z JWT, klient nie może
     /// wskazać innego konta.
     /// </summary>
-    [ApiController]
-    [Authorize]
-    [Route("api/user-settings")]
-    public class UserSettingsController : ControllerBase
+    public class UserSettingsController : ForgeBaseController
     {
-        private const int MaxThemeLength = 64;
+        private readonly ISender _mediator;
 
-        private readonly ForgeDbContext _db;
-
-        public UserSettingsController(ForgeDbContext db)
+        public UserSettingsController(ISender mediator)
         {
-            _db = db;
+            _mediator = mediator;
         }
 
         [HttpGet]
         public async Task<ActionResult<UserPreferencesDto>> GetMine(CancellationToken cancellationToken)
         {
-            if (!TryGetUserId(out var userId))
+            var userId = GetCurrentUserId();
+            if (userId == 0)
             {
                 return Unauthorized();
             }
 
-            var prefs = await _db.Set<User>()
-                .AsNoTracking()
-                .Where(u => u.Id == userId)
-                .Select(u => new UserPreferencesDto
-                {
-                    ThemePreference = u.ThemePreference
-                })
-                .FirstOrDefaultAsync(cancellationToken);
+            var result = await _mediator.Send(new GetMyPreferencesQuery(userId), cancellationToken);
 
-            if (prefs == null)
+            return result.Status switch
             {
-                return NotFound();
-            }
-
-            return Ok(prefs);
+                Application.Common.OperationStatus.Ok => Ok(result.Value),
+                Application.Common.OperationStatus.NotFound => NotFound(),
+                _ => StatusCode(500)
+            };
         }
 
         [HttpPut]
         public async Task<IActionResult> UpdateMine(
-            [FromBody] UserPreferencesDto dto,
+            [FromBody] UserPreferencesUpdateRequest dto,
             CancellationToken cancellationToken)
         {
-            if (!TryGetUserId(out var userId))
+            var userId = GetCurrentUserId();
+            if (userId == 0)
             {
                 return Unauthorized();
             }
 
-            var user = await _db.Set<User>().FirstOrDefaultAsync(u => u.Id == userId, cancellationToken);
-            if (user == null)
-            {
-                return NotFound();
-            }
+            var result = await _mediator.Send(new UpdateMyPreferencesCommand(userId, dto), cancellationToken);
 
-            // Whitelist motywów jest po stronie frontu; tu tylko limitujemy długość, żeby ktoś
-            // nie zapchał kolumny śmieciem i nie wepchnął tam HTML/script-a.
-            user.ThemePreference = SanitizeTheme(dto.ThemePreference);
-
-            await _db.SaveChangesAsync(cancellationToken);
-            return NoContent();
-        }
-
-        private bool TryGetUserId(out int userId)
-        {
-            var sub = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            return int.TryParse(sub, out userId);
-        }
-
-        private static string? SanitizeTheme(string? raw)
-        {
-            if (string.IsNullOrWhiteSpace(raw))
-            {
-                return null;
-            }
-            var trimmed = raw.Trim();
-            return trimmed.Length > MaxThemeLength ? trimmed[..MaxThemeLength] : trimmed;
+            return MapToResponse(result);
         }
     }
 }
