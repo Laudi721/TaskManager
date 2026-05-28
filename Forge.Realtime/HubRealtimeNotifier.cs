@@ -17,5 +17,11 @@ internal sealed class HubRealtimeNotifier : IRealtimeNotifier
         return _hub.Clients.All.SendAsync(RealtimeEvents.EntityChanged, message, cancellationToken);
     }
 
+    public Task SessionRevokedAsync(int userId, string reason, CancellationToken cancellationToken = default)
+    {
+        return _hub.Clients.User(userId.ToString())
+            .SendAsync(RealtimeEvents.SessionRevoked, new { reason }, cancellationToken);
+    }
+
     private sealed record EntityChangedMessage(string Entity, object? Payload);
 }

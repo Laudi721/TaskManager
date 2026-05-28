@@ -7,6 +7,7 @@ export interface Role {
   id: number;
   name: string;
   usersCount: number;
+  isArchive: boolean;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -62,4 +63,26 @@ export class RolesService {
       error: () => this._roles.set(null)
     });
   }
+
+  create(payload: RoleCreatePayload): Observable<void> {
+    return this.http.post<void>(this.apiUrl, payload).pipe(
+      tap(() => this.handleChange())
+    );
+  }
+
+  delete(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`).pipe(
+      tap(() => this.handleChange())
+    );
+  }
+
+  toggleArchive(id: number): Observable<void> {
+    return this.http.post<void>(`${this.apiUrl}/archive/${id}`, {}).pipe(
+      tap(() => this.handleChange())
+    );
+  }
+}
+
+export interface RoleCreatePayload {
+  name: string;
 }

@@ -1,28 +1,35 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
+using Forge.Database.SoftDelete;
+using Microsoft.EntityFrameworkCore;
 
 namespace Forge.Database.Models
 {
     [Table("Users")]
-    public class User
+    public class User : ISoftDeletable
     {
+        [Key]
         public int Id { get; set; }
 
         /// <summary>
         /// Login
         /// </summary>
+        [Required]
         public string Login { get; set; }
 
         /// <summary>
         /// Password
         /// </summary>
+        [Required]
         public string PasswordHash { get; set; }
 
         /// <summary>
         /// Name
         /// </summary>
+        [Required]
         public string Name { get; set; }
 
         /// <summary>
@@ -50,5 +57,9 @@ namespace Forge.Database.Models
         /// Audit logs
         /// </summary>
         public List<AuditLog> AuditLogs { get; set; } = new List<AuditLog>();
+
+        public bool IsDeleted { get; set; }
+
+        public DateTime? DeletedTime { get; set; }
     }
 }

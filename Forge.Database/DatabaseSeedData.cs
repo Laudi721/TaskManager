@@ -1,3 +1,4 @@
+using System.Data;
 using Forge.Common.Interfaces;
 using Forge.Database.Models;
 using Microsoft.EntityFrameworkCore;
@@ -15,103 +16,46 @@ namespace Forge.Database
 
         public void Seed(ForgeDbContext context)
         {
-            var permissions = SeedPermissions(context);
-            var roles = SeedRoles(context, permissions);
-            SeedAdminUser(context, roles);
-
-            context.SaveChanges();
+            SeedAdminRole(context);
+            SeedAdminUser(context);
         }
 
-        private static Dictionary<string, Permissions> SeedPermissions(ForgeDbContext context)
+        private void SeedAdminRole(ForgeDbContext context)
         {
-            var requiredNames = new[]
+            var adminRoleExists = context.Set<Role>().Any(r => r.Name == "Admin");
+
+            if (!adminRoleExists)
             {
-                "CreateTask",
-                "EditTask",
-                "DeleteTask",
-                "ViewTask",
-                "FinishTask",
-                "FailedTask"
-            };
+                var adminRole = new Role { Name = "Admin" };
 
-            var existing = context.Set<Permissions>()
-                .Where(p => requiredNames.Contains(p.Name))
-                .ToDictionary(p => p.Name);
-
-            foreach (var name in requiredNames)
-            {
-                if (existing.ContainsKey(name))
-                {
-                    continue;
-                }
-
-                var permission = new Permissions { Name = name };
-                context.Set<Permissions>().Add(permission);
-                existing.Add(name, permission);
+                context.Set<Role>().Add(adminRole);
+                context.SaveChanges();
             }
-
-            return existing;
         }
 
-        private static Dictionary<string, Role> SeedRoles(
-            ForgeDbContext context,
-            Dictionary<string, Permissions> permissions)
+        private void SeedAdminUser(ForgeDbContext context)
         {
-            var definitions = new Dictionary<string, string[]>
-            {
-                ["Admin"] = permissions.Keys.ToArray(),
-                ["User"] = new[] { "EditTask", "ViewTask", "FinishTask", "FailedTask" }
-            };
-
-            var existing = context.Set<Role>()
-                .Include(r => r.Permissions)
-                .Where(r => definitions.Keys.Contains(r.Name))
-                .ToDictionary(r => r.Name);
-
-            foreach (var (name, permissionNames) in definitions)
-            {
-                var rolePermissions = permissionNames.Select(n => permissions[n]).ToList();
-
-                if (existing.TryGetValue(name, out var role))
-                {
-                    foreach (var permission in rolePermissions)
-                    {
-                        if (!role.Permissions.Any(p => p.Name == permission.Name))
-                        {
-                            role.Permissions.Add(permission);
-                        }
-                    }
-
-                    continue;
-                }
-
-                var newRole = new Role { Name = name, Permissions = rolePermissions };
-                context.Set<Role>().Add(newRole);
-                existing.Add(name, newRole);
-            }
-
-            return existing;
-        }
-
-        private void SeedAdminUser(ForgeDbContext context, Dictionary<string, Role> roles)
-        {
-            const string adminLogin = "admin";
+            const string adminLogin = "Admin";
+            const string adminPassword = "powerAdmin";
 
             var adminExists = context.Set<User>().Any(u => u.Login == adminLogin);
+
             if (adminExists)
-            {
                 return;
-            }
+
+            var adminRole = context.Set<Role>().First(r => r.Name == "Admin");
 
             var admin = new User
             {
                 Login = adminLogin,
-                PasswordHash = _passwordService.Hash("powerAdmin"),
+                PasswordHash = _passwordService.Hash(adminPassword),
                 Name = "Admin User",
-                Roles = new List<Role> { roles["Admin"] }
+                Roles = new List<Role> { adminRole }
             };
 
             context.Set<User>().Add(admin);
+            context.SaveChanges();
         }
+
     }
 }

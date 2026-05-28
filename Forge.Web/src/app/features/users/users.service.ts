@@ -64,7 +64,7 @@ export class UsersService {
   }
 
   toggleArchive(id: number): Observable<void> {
-    return this.http.post<void>(`${this.apiUrl}/${id}/archive`, {}).pipe(
+    return this.http.post<void>(`${this.apiUrl}/archive/${id}`, {}).pipe(
       tap(() => this.handleChange())
     );
   }

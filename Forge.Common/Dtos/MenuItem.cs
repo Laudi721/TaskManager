@@ -1,4 +1,4 @@
-namespace Forge.Desk.WebApi.Configuration
+namespace Forge.Common.Dtos
 {
     public class MenuItem
     {

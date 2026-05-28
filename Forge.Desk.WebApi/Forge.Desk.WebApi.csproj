@@ -20,6 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Forge.Application\Forge.Application.csproj" />
     <ProjectReference Include="..\Forge.Common\Forge.Common.csproj" />
     <ProjectReference Include="..\Forge.Database\Forge.Database.csproj" />
     <ProjectReference Include="..\Forge.Realtime\Forge.Realtime.csproj" />
